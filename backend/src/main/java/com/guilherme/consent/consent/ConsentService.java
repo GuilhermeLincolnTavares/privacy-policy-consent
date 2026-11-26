@@ -11,6 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ConsentService {
 
@@ -56,6 +58,17 @@ public class ConsentService {
 		findSettings().changeNotificationEnabled(notificationEnabled);
 	}
 
+	@Transactional(readOnly = true)
+	public boolean isNotificationEnabled() {
+		return findSettings().isNotificationEnabled();
+	}
+
+	@Transactional(readOnly = true)
+	public List<UserConsentSummary> listUsersWithConsentStatus() {
+		PrivacyPolicy currentPolicy = findCurrentPolicy();
+		return consentRepository.findAllUsersWithConsentFor(currentPolicy.getId());
+	}
+
 	private void saveConsent(User user, PrivacyPolicy policy) {
 		try {
 			consentRepository.save(new PrivacyConsent(user, policy));
@@ -68,10 +81,6 @@ public class ConsentService {
 
 	private boolean hasAccepted(Long userId, PrivacyPolicy policy) {
 		return consentRepository.existsByUserIdAndPolicyId(userId, policy.getId());
-	}
-
-	private boolean isNotificationEnabled() {
-		return findSettings().isNotificationEnabled();
 	}
 
 	private PrivacyPolicy findCurrentPolicy() {
