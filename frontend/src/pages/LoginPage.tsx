@@ -1,10 +1,10 @@
-import { useMutation } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router'
 import { Button } from '../components/Button'
 import { ShieldIcon } from '../components/ShieldIcon'
 import { TextField } from '../components/TextField'
 import { useAuth } from '../hooks/useAuth'
+import { useLogin } from '../hooks/useLogin'
 import { homeRouteFor } from '../routes'
 import { isUnauthorizedError } from '../services/httpClient'
 
@@ -18,10 +18,10 @@ const DEMO_USERS = [
 ]
 
 export const LoginPage = () => {
-  const { session, login } = useAuth()
+  const { session } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const loginMutation = useMutation({ mutationFn: login })
+  const loginMutation = useLogin()
 
   if (session) {
     return <Navigate to={homeRouteFor(session.role)} replace />
