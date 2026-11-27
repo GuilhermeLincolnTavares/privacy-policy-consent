@@ -6,10 +6,7 @@ confirmação. O aceite é persistido para que o modal não apareça novamente. 
 administrativo, uma grid mostra se cada usuário já aceitou os termos, e o administrador pode
 ativar ou desativar a exibição da notificação.
 
-Este repositório é a resposta ao _Teste Técnico para Desenvolvedor do Time Mercado
-Eletrônico_. O enunciado permite qualquer tecnologia, então a stack foi escolhida pela
-clareza e pela facilidade de rodar: **Java 21 + Spring Boot 4.2**, **PostgreSQL 17** e
-**React + Vite + TypeScript**.
+**Stack:** Java 21 + Spring Boot 4.2, PostgreSQL 17 e React + Vite + TypeScript.
 
 ## Sumário
 
@@ -50,8 +47,8 @@ clareza e pela facilidade de rodar: **Java 21 + Spring Boot 4.2**, **PostgreSQL 
 - **Aceite por versão.** `privacy_consents` liga usuário e versão da política e guarda a data
   do aceite. O par usuário + política é único, então aceitar duas vezes não duplica o registro
   e o histórico é preservado.
-- **Botão de ativar/desativar.** O enunciado não define quem usa o botão. Foi interpretado como
-  um interruptor do **administrador**, global, que controla se o modal é exibido. Com ele
+- **Botão de ativar/desativar.** O botão de ativar/desativar foi implementado como um
+  interruptor do **administrador**, global, que controla se o modal é exibido. Com ele
   desligado, ninguém vê a notificação, mas o status de aceite não é alterado. O interruptor
   fica em `privacy_settings` (uma única linha), separado das políticas, para continuar
   desligado quando uma nova versão for publicada.
@@ -107,7 +104,22 @@ para quem não é administrador e `404` quando não existe política vigente.
 - Node.js 20.19 ou superior (ou 22.12+)
 - Docker e Docker Compose
 
+### Obter o projeto
+
+Em qualquer pasta do seu computador:
+
+```bash
+git clone https://github.com/GuilhermeLincolnTavares/privacy-policy-consent.git
+cd privacy-policy-consent
+```
+
+Os comandos a seguir partem da **raiz do projeto** (a pasta `privacy-policy-consent`, onde
+estão `backend`, `frontend` e `docker-compose.yml`). O backend e o frontend ficam rodando,
+então cada um usa um terminal próprio.
+
 ### Banco de dados
+
+Na raiz do projeto:
 
 ```bash
 docker compose up -d
@@ -122,29 +134,45 @@ Configuração do banco (usada por padrão pelo backend):
 | Banco | `privacy_consent` |
 | Usuário / senha | `consent` / `consent` |
 
-Quem não usar Docker pode instalar o PostgreSQL e criar o banco `privacy_consent` com esse
-usuário e senha. Os valores podem ser trocados pelas variáveis `DB_URL`, `DB_USER` e
-`DB_PASSWORD`.
-
 ### Backend
+
+Em um terminal, a partir da raiz do projeto:
+
+**Windows (PowerShell):**
+
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+**Linux, macOS ou Git Bash:**
 
 ```bash
 cd backend
-./mvnw spring-boot:run        # Windows: .\mvnw.cmd spring-boot:run
+./mvnw spring-boot:run
 ```
 
 A API sobe em `http://localhost:8080`. Ao iniciar, o Flyway aplica as migrations (que já
 criam a política na versão 1 e o interruptor, ligado) e os usuários de teste são criados.
 
-Variáveis de ambiente opcionais:
+#### Configuração
 
-| Variável | Padrão | Uso |
+O backend usa as configurações abaixo, com valores padrão definidos em
+`backend/src/main/resources/application.yaml`. Eles já funcionam com o Docker, então **não é
+preciso alterar nada** para rodar.
+
+| Configuração | Valor padrão | Uso |
 |---|---|---|
 | `DB_URL` | `jdbc:postgresql://localhost:5432/privacy_consent` | Conexão com o banco. |
 | `DB_USER` / `DB_PASSWORD` | `consent` / `consent` | Credenciais do banco. |
 | `JWT_SECRET` | valor de desenvolvimento | Chave que assina os tokens. **Troque em produção.** |
 
+Para usar outro valor, defina a variável de ambiente com o mesmo nome antes de iniciar o
+backend.
+
 ### Frontend
+
+Em **outro** terminal, também a partir da raiz do projeto:
 
 ```bash
 cd frontend
@@ -171,12 +199,25 @@ também tem botões **Preencher** que preenchem o formulário com cada um.
 
 ### Testes automatizados
 
-```bash
-# Backend (alguns testes precisam do banco no ar: docker compose up -d)
-cd backend
-./mvnw test                   # Windows: .\mvnw.cmd test
+Backend (alguns testes precisam do banco no ar: `docker compose up -d`):
 
-# Frontend
+**Windows (PowerShell):**
+
+```powershell
+cd backend
+.\mvnw.cmd test
+```
+
+**Linux, macOS ou Git Bash:**
+
+```bash
+cd backend
+./mvnw test
+```
+
+Frontend (igual em qualquer sistema):
+
+```bash
 cd frontend
 npm test
 ```
@@ -206,8 +247,7 @@ Com banco, backend e frontend no ar:
 ### Testar o modal de novo (zerar os aceites)
 
 ```bash
-docker exec privacy-consent-db psql -U consent -d privacy_consent \
-  -c "DELETE FROM privacy_consents;"
+docker exec privacy-consent-db psql -U consent -d privacy_consent -c "DELETE FROM privacy_consents;"
 ```
 
 Todos voltam a ficar **Pendente**. Nenhum usuário, política ou configuração é alterado.
@@ -217,34 +257,70 @@ Todos voltam a ficar **Pendente**. Nenhum usuário, política ou configuração 
 Publique a versão 2 (a vigente passa a ser a nova, e todos voltam a ver o modal):
 
 ```bash
-docker exec privacy-consent-db psql -U consent -d privacy_consent -c "
-BEGIN;
-UPDATE privacy_policies SET is_current = FALSE WHERE is_current;
-INSERT INTO privacy_policies (version, title, content, is_current)
-VALUES (2, 'Política de Privacidade',
-        'Texto da versão 2. Ao clicar em \"Li e aceito\", você confirma que leu e concorda com os termos.',
-        TRUE);
-COMMIT;"
+docker exec privacy-consent-db psql -U consent -d privacy_consent -c "BEGIN; UPDATE privacy_policies SET is_current = FALSE WHERE is_current; INSERT INTO privacy_policies (version, title, content, is_current) VALUES (2, 'Politica de Privacidade', 'Atualizamos nossa Politica de Privacidade. Esta versao 2 detalha o uso de dados de acesso e o prazo de armazenamento. Ao clicar em Li e aceito, voce confirma que leu e concorda com os termos.', TRUE); COMMIT;"
 ```
 
 Os aceites da versão 1 continuam no banco, mas valem só para ela, então a grid mostra todos
-como **Pendente** até aceitarem a versão 2. Para desfazer o teste:
+como **Pendente** até aceitarem a versão 2. Para desfazer o teste da versão 2 (apaga a versão 2
+e os aceites dela, e a versão 1 volta a ser a vigente):
 
 ```bash
-docker exec privacy-consent-db psql -U consent -d privacy_consent -c "
-BEGIN;
-DELETE FROM privacy_consents WHERE policy_id = (SELECT id FROM privacy_policies WHERE version = 2);
-DELETE FROM privacy_policies WHERE version = 2;
-UPDATE privacy_policies SET is_current = TRUE WHERE version = 1;
-COMMIT;"
+docker exec privacy-consent-db psql -U consent -d privacy_consent -c "BEGIN; DELETE FROM privacy_consents WHERE policy_id = (SELECT id FROM privacy_policies WHERE version = 2); DELETE FROM privacy_policies WHERE version = 2; UPDATE privacy_policies SET is_current = TRUE WHERE version = 1; COMMIT;"
 ```
 
 > Esses comandos mexem só nos dados. Nenhuma migration é criada, e o schema não muda.
 
 ### Exemplos de chamadas à API
 
-Em Git Bash, Linux ou macOS (no PowerShell, use `curl.exe`). Primeiro, faça login e guarde
-o token:
+Chamadas diretas à API, sem o navegador. Escolha o bloco do seu sistema.
+
+#### Windows (PowerShell)
+
+Faça login como Maria e guarde o token:
+
+```powershell
+$login = Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType "application/json" -Body '{"email":"maria@email.com","password":"maria123"}'
+$headers = @{ Authorization = "Bearer $($login.token)" }
+```
+
+Consultar se o modal deve aparecer (`shouldShowModal` verdadeiro ou falso):
+
+```powershell
+Invoke-RestMethod http://localhost:8080/api/consent/status -Headers $headers
+```
+
+Aceitar a política (sem resposta, que é o `204`, e repetir a chamada não duplica nada):
+
+```powershell
+Invoke-RestMethod -Method Post http://localhost:8080/api/consent/accept -Headers $headers
+```
+
+Rotas de administrador exigem o perfil `ADMIN`. Com o token da Maria, o resultado esperado é o
+erro **403 (Proibido)**:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/api/admin/users -Headers $headers
+```
+
+Com o token do administrador:
+
+```powershell
+$admin = Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType "application/json" -Body '{"email":"admin@email.com","password":"admin123"}'
+$adminHeaders = @{ Authorization = "Bearer $($admin.token)" }
+
+Invoke-RestMethod http://localhost:8080/api/admin/users -Headers $adminHeaders
+Invoke-RestMethod -Method Put -Uri http://localhost:8080/api/admin/settings -Headers $adminHeaders -ContentType "application/json" -Body '{"notificationEnabled":false}'
+```
+
+> O `Put` acima **desativa a notificação**, e o modal deixa de aparecer para todos. Para
+> reativar, repita o comando com `{"notificationEnabled":true}`.
+
+> No PowerShell 5.1, os acentos da resposta podem aparecer trocados no terminal (por exemplo,
+> `PolÃtica`). É só a exibição do terminal, e a API devolve o texto correto.
+
+#### Linux, macOS ou Git Bash (curl)
+
+Primeiro, faça login e guarde o token:
 
 ```bash
 TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
@@ -256,7 +332,12 @@ Consultar se o modal deve aparecer:
 
 ```bash
 curl -s http://localhost:8080/api/consent/status -H "Authorization: Bearer $TOKEN"
-# {"shouldShowModal":true,"policy":{"version":1,"title":"Política de Privacidade","content":"..."}}
+```
+
+Resposta esperada:
+
+```json
+{"shouldShowModal":true,"policy":{"version":1,"title":"Política de Privacidade","content":"..."}}
 ```
 
 Aceitar a política (resposta `204`, e repetir a chamada não duplica nada):
@@ -269,7 +350,12 @@ Conferir que o modal não aparece mais:
 
 ```bash
 curl -s http://localhost:8080/api/consent/status -H "Authorization: Bearer $TOKEN"
-# {"shouldShowModal":false,...}
+```
+
+Resposta esperada:
+
+```json
+{"shouldShowModal":false,"policy":{"version":1,"title":"Política de Privacidade","content":"..."}}
 ```
 
 Rotas de administrador exigem o perfil `ADMIN`. Com o token da Maria, a resposta é `403`:
@@ -278,7 +364,15 @@ Rotas de administrador exigem o perfil `ADMIN`. Com o token da Maria, a resposta
 curl -i http://localhost:8080/api/admin/users -H "Authorization: Bearer $TOKEN"
 ```
 
-Com o token do administrador (`admin@email.com` / `admin123`):
+Com o token do administrador (`admin@email.com` / `admin123`), faça o login dele primeiro:
+
+```bash
+ADMIN_TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@email.com","password":"admin123"}' | sed 's/.*"token":"\([^"]*\)".*/\1/')
+```
+
+Listar os usuários e desativar a notificação:
 
 ```bash
 curl -s http://localhost:8080/api/admin/users    -H "Authorization: Bearer $ADMIN_TOKEN"
@@ -286,6 +380,9 @@ curl -s -X PUT http://localhost:8080/api/admin/settings \
   -H "Authorization: Bearer $ADMIN_TOKEN" -H "Content-Type: application/json" \
   -d '{"notificationEnabled":false}'
 ```
+
+> O `PUT` acima **desativa a notificação**, e o modal deixa de aparecer para todos. Para
+> reativar, repita o comando com `"notificationEnabled":true`.
 
 ## 4. Estrutura e arquitetura
 
@@ -341,8 +438,6 @@ componentes e hooks são funções de seta.
 - **Por que não Atomic Design no frontend?** É uma metodologia pensada para design systems
   com muitos componentes reutilizáveis. O frontend tem poucas telas (login, modal e grid
   administrativa), então uma organização simples por tipo de arquivo é mais legível.
-- **Por que um modal que não fecha?** O enunciado fala em um "botão de confirmação", então
-  o aceite é a única saída: sem `Esc`, sem clique fora e sem botão de fechar.
 
 ## 5. Como estender
 
@@ -363,8 +458,6 @@ por versão, e só uma política pode ser a vigente.
   regras já existentes.
 - **Histórico de versões:** listar versões anteriores e, na grid, mostrar a versão que cada
   usuário aceitou (os dados já existem em `privacy_consents`).
-- **Outros tipos de aviso:** o modelo `privacy_settings` + `ConsentService` pode ganhar um
-  campo de tipo de notificação, reaproveitando o modal e a grid.
 - **Refresh token e logout no servidor**, para sessões mais longas e revogáveis.
 
 ## 6. Para produção
