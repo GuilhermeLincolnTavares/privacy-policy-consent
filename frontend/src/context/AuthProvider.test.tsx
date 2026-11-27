@@ -4,11 +4,13 @@ import MockAdapter from 'axios-mock-adapter'
 import { describe, expect, it } from 'vitest'
 import { useAuth } from '../hooks/useAuth'
 import { httpClient } from '../services/httpClient'
+import { createQueryClient } from '../queryClient'
 import { loadSession, saveSession } from '../services/sessionStore'
 import { renderWithAuth } from '../test/renderWithAuth'
 import { USER_SESSION } from '../test/sessions'
 
 const ANONYMOUS_LABEL = 'anonymous'
+const CACHED_QUERY_KEY = ['cached']
 
 const SessionStatus = () => {
   const { session, logout } = useAuth()
@@ -46,6 +48,17 @@ describe('AuthProvider', () => {
 
     expect(screen.getByText(ANONYMOUS_LABEL)).toBeInTheDocument()
     expect(loadSession()).toBeNull()
+  })
+
+  it('clears the cached queries on logout', async () => {
+    saveSession(USER_SESSION)
+    const queryClient = createQueryClient()
+    queryClient.setQueryData(CACHED_QUERY_KEY, 'cached value')
+    renderWithAuth(<SessionStatus />, '/', queryClient)
+
+    await userEvent.setup().click(screen.getByRole('button', { name: 'logout' }))
+
+    expect(queryClient.getQueryData(CACHED_QUERY_KEY)).toBeUndefined()
   })
 
   it('logs the user out when the API rejects the token', async () => {
