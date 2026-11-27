@@ -18,14 +18,18 @@ export const UsersGrid = ({ users }: UsersGridProps) => {
 
   return (
     <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-      <table className="min-w-full divide-y divide-slate-200 text-sm">
+      <table className="min-w-full text-sm">
         <caption className="sr-only">
           Usuários e status do aceite da política de privacidade vigente
         </caption>
-        <thead className="bg-slate-50 text-left text-slate-600">
+        <thead className="border-b border-slate-200 bg-cream text-left text-ink">
           <tr>
             {COLUMN_HEADERS.map((header) => (
-              <th key={header} scope="col" className="px-4 py-3 font-medium">
+              <th
+                key={header}
+                scope="col"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide"
+              >
                 {header}
               </th>
             ))}
@@ -34,15 +38,15 @@ export const UsersGrid = ({ users }: UsersGridProps) => {
         <tbody className="divide-y divide-slate-100">
           {users.map((user) => (
             <tr key={user.id}>
-              <th scope="row" className="whitespace-nowrap px-4 py-3 text-left font-medium text-slate-900">
+              <th scope="row" className="whitespace-nowrap px-4 py-3 text-left font-semibold text-ink">
                 {user.name}
               </th>
-              <td className="px-4 py-3 text-slate-600">{user.email}</td>
-              <td className="px-4 py-3 text-slate-600">{ROLE_LABELS[user.role]}</td>
+              <td className="px-4 py-3 text-slate-700">{user.email}</td>
+              <td className="px-4 py-3 text-slate-700">{ROLE_LABELS[user.role]}</td>
               <td className="px-4 py-3">
                 <AcceptanceStatusBadge accepted={user.acceptedCurrentPolicy} />
               </td>
-              <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+              <td className="whitespace-nowrap px-4 py-3 text-slate-700">
                 {user.acceptedAt ? formatDateTime(user.acceptedAt) : NO_ACCEPTANCE_PLACEHOLDER}
               </td>
             </tr>

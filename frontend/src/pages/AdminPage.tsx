@@ -11,17 +11,17 @@ export const AdminPage = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Painel administrativo</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Painel administrativo</h1>
 
       <NotificationToggle />
 
       <section aria-labelledby={USERS_HEADING_ID} className="space-y-3">
-        <h2 id={USERS_HEADING_ID} className="text-lg font-semibold text-slate-900">
+        <h2 id={USERS_HEADING_ID} className="font-display text-lg font-bold text-ink">
           Usuários
         </h2>
 
         {isPending && (
-          <p role="status" className="text-sm text-slate-500">
+          <p role="status" className="text-sm text-muted">
             Carregando usuários...
           </p>
         )}

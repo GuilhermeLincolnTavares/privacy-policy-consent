@@ -8,8 +8,8 @@ import { ShieldIcon } from './ShieldIcon'
 const navLinkStyles = ({ isActive }: { isActive: boolean }): string => {
   const base = 'rounded-md px-3 py-2 text-sm font-medium transition'
   return isActive
-    ? `${base} bg-amber-100 text-amber-800`
-    : `${base} text-slate-600 hover:bg-slate-100 hover:text-slate-900`
+    ? `${base} bg-orange-100 text-ink`
+    : `${base} text-muted hover:bg-cream hover:text-ink`
 }
 
 export const AppHeader = () => {
@@ -23,9 +23,9 @@ export const AppHeader = () => {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-slate-900">
-            <ShieldIcon className="h-6 w-6 text-amber-500" />
-            <span className="font-semibold">Política de Privacidade</span>
+          <div className="flex items-center gap-2 text-ink">
+            <ShieldIcon className="h-6 w-6 text-brand" />
+            <span className="font-display font-bold">Energy Shield</span>
           </div>
           <nav className="flex gap-1">
             <NavLink to={ROUTES.home} end className={navLinkStyles}>
@@ -33,15 +33,15 @@ export const AppHeader = () => {
             </NavLink>
             {session.role === 'ADMIN' && (
               <NavLink to={ROUTES.admin} className={navLinkStyles}>
-                Painel admin
+                Painel administrativo
               </NavLink>
             )}
           </nav>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right text-sm leading-tight">
-            <p className="font-medium text-slate-900">{session.name}</p>
-            <p className="text-slate-500">{ROLE_LABELS[session.role]}</p>
+            <p className="font-semibold text-ink">{session.name}</p>
+            <p className="text-muted">{ROLE_LABELS[session.role]}</p>
           </div>
           <Button type="button" variant="secondary" onClick={logout}>
             Sair

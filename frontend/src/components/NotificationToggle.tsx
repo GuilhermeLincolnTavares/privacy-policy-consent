@@ -1,6 +1,7 @@
 import { useNotificationSettings } from '../hooks/useNotificationSettings'
 import { useUpdateNotificationSettings } from '../hooks/useUpdateNotificationSettings'
 import { Button } from './Button'
+import { CheckCircleIcon } from './CheckCircleIcon'
 
 const HEADING_ID = 'notification-toggle-heading'
 const LOAD_ERROR_MESSAGE = 'Não foi possível carregar a configuração.'
@@ -14,14 +15,14 @@ export const NotificationToggle = () => {
   return (
     <section
       aria-labelledby={HEADING_ID}
-      className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
+      className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200"
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 id={HEADING_ID} className="text-lg font-semibold text-slate-900">
+          <h2 id={HEADING_ID} className="font-display text-lg font-bold text-ink">
             Notificação de política de privacidade
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             Quando ativada, quem ainda não aceitou a versão vigente vê o aviso ao entrar.
           </p>
         </div>
@@ -42,10 +43,13 @@ export const NotificationToggle = () => {
         {isEnabled !== undefined && (
           <div className="flex items-center gap-3">
             <span
-              className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                isEnabled ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-700'
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                isEnabled
+                  ? 'border-green-600 bg-green-50 text-green-700'
+                  : 'border-slate-400 bg-slate-50 text-slate-600'
               }`}
             >
+              {isEnabled && <CheckCircleIcon className="h-3.5 w-3.5" />}
               {isEnabled ? 'Ativada' : 'Desativada'}
             </span>
             <Button
