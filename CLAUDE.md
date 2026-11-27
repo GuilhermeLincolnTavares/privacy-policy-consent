@@ -20,8 +20,8 @@ React + Vite + TypeScript.
 - Controllers only receive requests, validate input and return responses. Business rules
   live in services.
 - API input and output use DTOs (Java `record`). JPA entities are never exposed by the API.
-- Frontend is also organized by feature (`features/consent`, `features/admin`), with the
-  API calls kept apart from the screens.
+- Frontend is organized by file type (`pages`, `components`, `hooks`, `services`, `context`,
+  `types`), with the API calls kept apart from the screens.
 - No hexagonal, DDD or Clean Architecture layers: the domain is small and extra
   abstractions would hurt readability.
 
@@ -30,6 +30,8 @@ React + Vite + TypeScript.
 - Names must explain themselves (`hasAcceptedCurrentPolicy`, not `check`). This is
   preferred over comments.
 - Short methods with a single responsibility.
+- Frontend: React components, hooks and helpers are arrow functions
+  (`export const Name = () => {}`), never `function` declarations.
 - No Lombok. Use `record` for DTOs and plain getters in entities.
 - No magic numbers or strings: use named constants.
 - Comment only the why (non-obvious decisions, traps), never the what.
