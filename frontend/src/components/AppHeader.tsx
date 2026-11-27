@@ -1,13 +1,9 @@
 import { NavLink } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
+import { ROLE_LABELS } from '../roleLabels'
 import { ROUTES } from '../routes'
 import { Button } from './Button'
 import { ShieldIcon } from './ShieldIcon'
-
-const ROLE_LABELS = {
-  USER: 'Usuário',
-  ADMIN: 'Administrador',
-} as const
 
 const navLinkStyles = ({ isActive }: { isActive: boolean }): string => {
   const base = 'rounded-md px-3 py-2 text-sm font-medium transition'
@@ -47,11 +43,7 @@ export const AppHeader = () => {
             <p className="font-medium text-slate-900">{session.name}</p>
             <p className="text-slate-500">{ROLE_LABELS[session.role]}</p>
           </div>
-          <Button
-            type="button"
-            onClick={logout}
-            className="bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50"
-          >
+          <Button type="button" variant="secondary" onClick={logout}>
             Sair
           </Button>
         </div>
