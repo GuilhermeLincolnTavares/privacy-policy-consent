@@ -6,10 +6,7 @@ confirmação. O aceite é persistido para que o modal não apareça novamente. 
 administrativo, uma grid mostra se cada usuário já aceitou os termos, e o administrador pode
 ativar ou desativar a exibição da notificação.
 
-Este repositório é a resposta ao _Teste Técnico para Desenvolvedor do Time Mercado
-Eletrônico_. O enunciado permite qualquer tecnologia, então a stack foi escolhida pela
-clareza e pela facilidade de rodar: **Java 21 + Spring Boot 4.2**, **PostgreSQL 17** e
-**React + Vite + TypeScript**.
+**Stack:** Java 21 + Spring Boot 4.2, PostgreSQL 17 e React + Vite + TypeScript.
 
 ## Sumário
 
