@@ -97,7 +97,7 @@ export const LoginPage = () => {
                     setEmail(demoUser.email)
                     setPassword(demoUser.password)
                   }}
-                  className="rounded-md px-2 py-1 font-semibold text-ink underline hover:bg-cream focus:outline-none focus-visible:ring-1 focus-visible:ring-ink"
+                  className="rounded-md px-2 py-1 cursor-pointer font-semibold text-ink underline hover:bg-orange-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-ink"
                 >
                   Preencher
                 </button>
