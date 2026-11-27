@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { onUnauthorized } from '../services/httpClient'
 import * as authService from '../services/authService'
@@ -12,10 +13,13 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(loadSession)
 
+  const queryClient = useQueryClient()
+
   const logout = useCallback(() => {
     clearSession()
     setSession(null)
-  }, [])
+    queryClient.clear()
+  }, [queryClient])
 
   const login = useCallback(async (credentials: LoginRequest) => {
     const newSession = await authService.login(credentials)
