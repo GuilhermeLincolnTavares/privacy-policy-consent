@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 type ButtonVariant = 'primary' | 'secondary'
 
 const BASE_STYLES =
-  'inline-flex items-center justify-center rounded-full px-5 py-2.5 font-display text-sm font-semibold text-ink shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
+  'inline-flex items-center justify-center rounded-full px-5 py-2.5 font-display text-sm font-semibold text-ink shadow-sm transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-60'
 
 const VARIANT_STYLES: Record<ButtonVariant, string> = {
   primary: 'bg-brand hover:bg-orange-400',
